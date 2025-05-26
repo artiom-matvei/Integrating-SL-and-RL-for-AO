@@ -35,7 +35,7 @@ class TrainManager:
         self.experiment_name = experiment_name
         self.save_dir = save_dir + self.experiment_name
         if not os.path.exists(self.save_dir):
-            os.mkdir(self.save_dir)
+            os.makedirs(self.save_dir, exist_ok=True)
         self.max_num_epochs = max_num_epochs_
         self.model = model_
         self.use_voltage_as_phase = use_voltage_as_phase
