@@ -21,7 +21,7 @@ p_tel.set_cobs(0.14)
 p_atmos = conf.Param_atmos()
 p_atmos.set_r0(0.16)
 p_atmos.set_nscreens(3)
-p_atmos.set_frac([0.50, 0.35, 0.15])
+p_atmos.set_frac([0.50, 0.5, 0.15])
 p_atmos.set_alt([0, 4000, 10000])
 p_atmos.set_windspeed([15, 15, 35])
 p_atmos.set_winddir([0, 20, 180])
@@ -83,7 +83,6 @@ p_dm1.set_type("tt")
 p_dm1.set_alt(0.)
 p_dm1.set_unitpervolt(0.0005)
 p_dm1.set_push4imat(10.)
-
 
 # centroiders
 p_centroider0 = conf.Param_centroider()

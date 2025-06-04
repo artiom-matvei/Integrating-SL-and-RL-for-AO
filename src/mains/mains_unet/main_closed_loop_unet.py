@@ -1,4 +1,5 @@
 # main_closed_loop_unet.py
+import os
 from src.env_methods.env_non_linear import AoEnvNonLinear
 import numpy as np
 import torch
@@ -369,5 +370,6 @@ if __name__ == "__main__":
         else:
             df = closed_loop_unet_tester.iterate_over_r0(dict_of_gains_)
 
+            os.makedirs(FOLDER_RESULTS_UNET, exist_ok=True)
             with open(FOLDER_RESULTS_UNET + args.unet_name[:-4] + "_closed_loop_test.pickle", 'wb') as handle:
                 pickle.dump(df, handle)

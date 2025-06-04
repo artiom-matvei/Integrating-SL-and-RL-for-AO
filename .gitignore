@@ -1,2 +1,7 @@
 *.hdf5
 __pycache__/
+data/slurm/*
+*.npy
+*.pth
+*.png
+*.csv

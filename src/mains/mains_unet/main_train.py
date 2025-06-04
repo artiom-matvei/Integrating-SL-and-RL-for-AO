@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import argparse
 from src.global_cte import FOLDER_SAVE_DATA_UNET, FOLDER_CHECKPOINTS_UNET
+# import wandb
 
 class TrainManager:
     def __init__(self,
@@ -33,6 +34,22 @@ class TrainManager:
                  subtract_mean_from_phase=True,
                  save_frequency_=5):
         self.experiment_name = experiment_name
+        #         # Initialize wandb
+        # wandb.init(
+        #     project="unet-training",
+        #     name=experiment_name,
+        #     config={
+        #         "batch_size": batch_size_,
+        #         "max_epochs": max_num_epochs_,
+        #         "criterion": criterion_name_,
+        #         "use_voltage_as_phase": use_voltage_as_phase,
+        #         "normalization_noise": normalization_noise,
+        #         "max_dataset_size": max_dataset_size,
+        #         "epsilon": epsilon,
+        #         "max_num_eval": max_num_eval,
+        #         "subtract_mean_from_phase": subtract_mean_from_phase
+        #     }
+        # )
         self.save_dir = save_dir + self.experiment_name
         if not os.path.exists(self.save_dir):
             os.makedirs(self.save_dir, exist_ok=True)
@@ -285,6 +302,8 @@ if __name__ == "__main__":
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--starting_lr', type=float, default=0.0002)
     parser.add_argument('--subtract_mean_from_phase', action='store_true')
+    parser.add_argument('--beta1', type=float, default=0.9)
+    parser.add_argument('--beta2', type=float, default=0.999)
     args = parser.parse_args()
 
     main_device = "cuda:" + str(args.gpu_ids[0])
@@ -297,7 +316,7 @@ if __name__ == "__main__":
         model = UnetGenerator(input_nc=4, output_nc=1, num_downs=9, ngf=64)
 
     model = init_net(model, args.init_type, args.init_gain, args.gpu_ids, args.initialize_last_layer_0)
-    optimizer = optim.Adam(model.parameters(), lr=args.starting_lr)
+    optimizer = optim.Adam(model.parameters(), lr=args.starting_lr, betas=(args.beta1, args.beta2))
     train_manager = TrainManager(experiment_name=args.experiment_name + "_" + criterion_name,
                                  dataroot=os.path.join(args.data_dir, args.data_name),
                                  save_dir=args.save_dir,
@@ -312,4 +331,6 @@ if __name__ == "__main__":
                                  max_dataset_size=args.max_dataset_size,
                                  subtract_mean_from_phase=args.subtract_mean_from_phase)
 
+    print(f"Batch size: {args.batch_size}")
+    
     train_manager.train()
